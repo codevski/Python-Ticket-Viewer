@@ -43,8 +43,8 @@ def pullData(newURL=None):
     # Decode the JSON response into a dictionary and use the data
     data = response.json()
     
-    print("Next Page", data['next_page'])
-    print("Previous Page", data['previous_page'])
+    print("Next Page", data['next_page']) # Testing Purpose
+    print("Previous Page", data['previous_page']) # Testing Purpose
     
     
     return data
@@ -88,72 +88,6 @@ def sub_menu():
         if sub_option == "1":
             # Set the request parameters
             listAll()
-            """
-            url = 'https://saso.zendesk.com/api/v2/tickets.json?per_page=1'
-            user = 's@saso.io'
-            pwd = 'ZendeskTest!23'
-            
-            # Do the HTTP get request
-            response = requests.get(url, auth=(user, pwd))
-
-            # Check for HTTP codes other than 200
-            if response.status_code != 200:
-                print('Status:', response.status_code, 'Problem with the request. Exiting.')
-                exit()
-            
-            # Decode the JSON response into a dictionary and use the data
-            data = response.json()
-            
-            # Example 1: Print the name of the first group in the list
-            tickets = data['tickets']
-            #subject = str(data['tickets'][0]['subject'])
-            #submitter = str(data['tickets'][0]['submitter_id'])
-            #created = str(data['tickets'][0]['created_at'])
-            #print( 'id = ', data['tickets'][0]['id'] )
-            #d = datetime.datetime.strptime( created, "%Y-%m-%dT%H:%M:%SZ" )
-            #d2 = datetime.datetime.strftime(d, "%d %b %Y %I:%m:%p")
-            #print('Ticket with subject', "'"+subject+"'", 'opened by', submitter, "on", d)
-            #print('Ticket with subject', "'"+subject+"'", 'opened by', submitter, "on", d2)
-            #print(data['next_page'])
-            #print("URL:", url)
-            #print("What is the next page", data['next_page'])
-            while url:
-                for all in tickets:
-                    dateTime = datetime.datetime.strftime(datetime.datetime.strptime( all['created_at'], "%Y-%m-%dT%H:%M:%SZ" ), "%d %b %Y %I:%m:%p")
-                    print('Ticket with subject', all['subject'], 'opened by', all['submitter_id'], "on", dateTime)
-                    
-                if(data['next_page'] != None):
-                    if (data['previous_page'] != None):
-                        answer = input("Press 1 for next page or 2 for previous page\n")
-                        
-                        if (answer == "1"):
-                            url = data['next_page']
-                            response = requests.get(url, auth=(user, pwd))
-                            data = response.json()
-                            tickets = data['tickets']
-                        
-                        elif (answer == "2"):
-                            url = data['previous_page']
-                            response = requests.get(url, auth=(user, pwd))
-                            data = response.json()
-                            tickets = data['tickets']
-                        else:
-                            break
-                    else:
-                        
-                        answer = input("Press 1 for next page\n")
-                        if (answer == "1"):
-                            url = data['next_page']
-                            response = requests.get(url, auth=(user, pwd))
-                            data = response.json()
-                            tickets = data['tickets']
-                        
-                        else:
-                            break
-                else:
-                    break
-
-           """
             
             sub_menu = True
         
@@ -169,25 +103,6 @@ def sub_menu():
             print("Sorry I did not recognize your option. Please try again")
 
 def listAll():
-    """
-    # Set the request parameters
-    url = 'https://saso.zendesk.com/api/v2/tickets.json?per_page=1'
-    user = 's@saso.io'
-    pwd = 'ZendeskTest!23'
-    
-    # Do the HTTP get request
-    response = requests.get(url, auth=(user, pwd))
-
-    # Check for HTTP codes other than 200
-    if response.status_code != 200:
-        print('Status:', response.status_code, 'Problem with the request. Exiting.')
-        exit()
-    
-    # Decode the JSON response into a dictionary and use the data
-    data = response.json()
-    
-    # Example 1: Print the name of the first group in the list
-    tickets = data['tickets']"""
     # Mite need to make URL Global
     url = url = 'https://saso.zendesk.com/api/v2/tickets.json?per_page=1'
     data = pullData()
