@@ -7,11 +7,11 @@
 #***********************************************************************
 # 
 
-import unittest
+import unittest # For Testing
 import requests
-import json
+import json 
 import sys
-import datetime
+import datetime # Date time
 
 """
 A system that allows to view tickets within the zendesk system via zendesk API calls.
@@ -22,9 +22,43 @@ try:
 except NameError:
   pyinput = input
 
-def pullData(newURL=None):
-    if(newURL == None):
+def totalTickets(Opt=None):
+    if(Opt == None):
         url = 'https://saso.zendesk.com/api/v2/tickets.json?per_page=1'
+    else:
+        url = 'https://saso.zendesk.com/api/v2/tickets.json'
+    # Set the request parameters
+    url = 'https://saso.zendesk.com/api/v2/tickets.json'
+    user = 's@saso.io'
+    pwd = 'ZendeskTest!23'
+    
+    # Do the HTTP get request
+    response = requests.get(url, auth=(user, pwd))
+
+    # Check for HTTP codes other than 200
+    if response.status_code != 200:
+        print('Status:', response.status_code, 'Problem with the request. Exiting.')
+        exit()
+    
+    # Decode the JSON response into a dictionary and use the data
+    data = response.json()
+    
+    tickets = data['tickets']
+    count = 0
+    #for ticket in tickets:
+    if(Opt != None):
+        print(len(tickets))
+    
+    return data
+    
+
+def pullData(newURL=None, flags=None):
+    if(newURL == None and flags == None):
+        url = 'https://saso.zendesk.com/api/v2/tickets.json'
+    elif (newURL == None):
+        url = 'https://saso.zendesk.com/api/v2/tickets.json'+flags
+    elif (newURL != None and flags != None):
+        url = newURL+flags
     else:
         url = newURL
     # Set the request parameters
@@ -93,6 +127,7 @@ def sub_menu():
         
         elif sub_option == "2":
             print("test2")
+            findTicket()
             sub_menu = True
             
         elif sub_option == "quit":
@@ -104,14 +139,15 @@ def sub_menu():
 
 def listAll():
     # Mite need to make URL Global
-    url = url = 'https://saso.zendesk.com/api/v2/tickets.json?per_page=1'
-    data = pullData()
+    #url = 'https://saso.zendesk.com/api/v2/tickets.json'
+    data = pullData('https://saso.zendesk.com/api/v2/tickets.json', '?per_page=1')
     tickets = data['tickets']
-    
-    while url:
-        for all in tickets:
-            dateTime = datetime.datetime.strftime(datetime.datetime.strptime( all['created_at'], "%Y-%m-%dT%H:%M:%SZ" ), "%d %b %Y %I:%m:%p")
-            print('Ticket with subject', all['subject'], 'opened by', all['submitter_id'], "on", dateTime)
+    while data:
+        print("ID | Priority | Type | Subject | Opened by | Created | Status")
+        for ticket in tickets:
+            dateTime = datetime.datetime.strftime(datetime.datetime.strptime( ticket['created_at'], "%Y-%m-%dT%H:%M:%SZ" ), "%d %b %Y %I:%m:%p")
+            print(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status'])
+
             
         if(data['next_page'] != None):
             if (data['previous_page'] != None):
@@ -143,6 +179,24 @@ def listAll():
                 
                 else:
                     break
+        else:
+            break
+
+def findTicket():
+    aTicket = input('Enter Ticket Number:\n')
+    data = pullData('https://saso.zendesk.com/api/v2/search.json?query=', aTicket)
+    print(data['results'])
+    tickets = data['results']
+    
+    while tickets:
+        print("ID | Priority | Type | Subject | Opened by | Created | Status")
+        for ticket in tickets:
+            dateTime = datetime.datetime.strftime(datetime.datetime.strptime( ticket['created_at'], "%Y-%m-%dT%H:%M:%SZ" ), "%d %b %Y %I:%m:%p")
+            print(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status'])
+
+            
+        if(data['next_page'] != None):
+            print('test123')
         else:
             break
 
