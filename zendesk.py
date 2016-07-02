@@ -126,7 +126,6 @@ def sub_menu():
             sub_menu = True
         
         elif sub_option == "2":
-            print("test2")
             findTicket()
             sub_menu = True
             
@@ -140,14 +139,15 @@ def sub_menu():
 def listAll():
     # Mite need to make URL Global
     #url = 'https://saso.zendesk.com/api/v2/tickets.json'
-    data = pullData('https://saso.zendesk.com/api/v2/tickets.json', '?per_page=1')
+    data = pullData('https://saso.zendesk.com/api/v2/tickets.json', '?per_page=25')
     tickets = data['tickets']
     while data:
-        print("ID | Priority | Type | Subject | Opened by | Created | Status")
+        print("{:<3} | {:<10} | {:<8} | {:<15} | {:<15} | {:<15} | {:<15}".format("ID", "Priority", "Type", "Subject", "Opened by", "Created", "Status"))
+        print("-"*3, "|", "-"*10, "|", "-"*8, "|", "-"*15, "|", "-"*15, "|", "-"*15, "|", "-"*15)
         for ticket in tickets:
             dateTime = datetime.datetime.strftime(datetime.datetime.strptime( ticket['created_at'], "%Y-%m-%dT%H:%M:%SZ" ), "%d %b %Y %I:%m:%p")
-            print(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status'])
-
+            #print(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status'])
+            print("{:<3} | {:<10} | {:<8} | {:<15} | {:<15} | {:<15} | {:<15}".format(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status']))
             
         if(data['next_page'] != None):
             if (data['previous_page'] != None):
@@ -185,20 +185,15 @@ def listAll():
 def findTicket():
     aTicket = input('Enter Ticket Number:\n')
     data = pullData('https://saso.zendesk.com/api/v2/search.json?query=', aTicket)
-    print(data['results'])
     tickets = data['results']
-    
-    while tickets:
+    if(not tickets):
+        print("No Tickets")
+    else:
         print("ID | Priority | Type | Subject | Opened by | Created | Status")
         for ticket in tickets:
             dateTime = datetime.datetime.strftime(datetime.datetime.strptime( ticket['created_at'], "%Y-%m-%dT%H:%M:%SZ" ), "%d %b %Y %I:%m:%p")
             print(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status'])
 
-            
-        if(data['next_page'] != None):
-            print('test123')
-        else:
-            break
 
 def main():
     print("Welcome to the ticket viewer")
