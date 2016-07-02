@@ -22,34 +22,13 @@ try:
 except NameError:
   pyinput = input
 
-def totalTickets(Opt=None):
-    if(Opt == None):
-        url = 'https://saso.zendesk.com/api/v2/tickets.json?per_page=1'
-    else:
-        url = 'https://saso.zendesk.com/api/v2/tickets.json'
-    # Set the request parameters
-    url = 'https://saso.zendesk.com/api/v2/tickets.json'
-    user = 's@saso.io'
-    pwd = 'ZendeskTest!23'
+def findDataLen(tickets):
+    big = 0
+    for ticket in tickets:
+        if(len(ticket['subject']) >= big):
+            big = len(ticket['subject'])
     
-    # Do the HTTP get request
-    response = requests.get(url, auth=(user, pwd))
-
-    # Check for HTTP codes other than 200
-    if response.status_code != 200:
-        print('Status:', response.status_code, 'Problem with the request. Exiting.')
-        exit()
-    
-    # Decode the JSON response into a dictionary and use the data
-    data = response.json()
-    
-    tickets = data['tickets']
-    count = 0
-    #for ticket in tickets:
-    if(Opt != None):
-        print(len(tickets))
-    
-    return data
+    return big
     
 
 def pullData(newURL=None, flags=None):
@@ -63,9 +42,9 @@ def pullData(newURL=None, flags=None):
         url = newURL
     # Set the request parameters
     #url = 'https://saso.zendesk.com/api/v2/tickets.json?per_page=1'
-    user = 's@saso.io'
-    pwd = 'ZendeskTest!23'
-    
+    user = 's@saso.io' + '/token'
+    pwd = 'RgqBAtndgfzXQaOpwXJVEJmdWqVVN1UMJE3sMqim'
+
     # Do the HTTP get request
     response = requests.get(url, auth=(user, pwd))
 
@@ -141,13 +120,15 @@ def listAll():
     #url = 'https://saso.zendesk.com/api/v2/tickets.json'
     data = pullData('https://saso.zendesk.com/api/v2/tickets.json', '?per_page=25')
     tickets = data['tickets']
+    big = findDataLen(tickets)
     while data:
-        print("{:<3} | {:<10} | {:<8} | {:<15} | {:<15} | {:<15} | {:<15}".format("ID", "Priority", "Type", "Subject", "Opened by", "Created", "Status"))
-        print("-"*3, "|", "-"*10, "|", "-"*8, "|", "-"*15, "|", "-"*15, "|", "-"*15, "|", "-"*15)
+        print("{:<3} | {:<10} | {:<8}".format("ID", "Priority", "Type"), "%-*s" % (big, "| Subject "), " | {:<15} | {:<20} | {:<15}" .format("Opened by", "Created", "Status"))
+        print("-"*3, "|", "-"*10, "|", "-"*8, "|", "-"*(big-1), "|", "-"*15, "|", "-"*20, "|", "-"*15)
         for ticket in tickets:
             dateTime = datetime.datetime.strftime(datetime.datetime.strptime( ticket['created_at'], "%Y-%m-%dT%H:%M:%SZ" ), "%d %b %Y %I:%m:%p")
             #print(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status'])
-            print("{:<3} | {:<10} | {:<8} | {:<15} | {:<15} | {:<15} | {:<15}".format(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status']))
+            print("{:<3} | {:<10} | {:<8}".format(ticket['id'], ticket['priority'], ticket['type']), "%-*s" % (big, "| Subject "), " | {:<15} | {:<15} | {:<15}" .format(ticket['submitter_id'], dateTime, ticket['status']))
+            #print("{:<3} | {:<10} | {:<8} | {:<15} | {:<15} | {:<15} | {:<15}".format(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status']))
             
         if(data['next_page'] != None):
             if (data['previous_page'] != None):
@@ -189,10 +170,12 @@ def findTicket():
     if(not tickets):
         print("No Tickets")
     else:
-        print("ID | Priority | Type | Subject | Opened by | Created | Status")
+        big = findDataLen(tickets)
+        print("{:<3} | {:<10} | {:<8}".format("ID", "Priority", "Type"), "%-*s" % (big, "| Subject "), " | {:<15} | {:<20} | {:<15}" .format("Opened by", "Created", "Status"))
+        print("-"*3, "|", "-"*10, "|", "-"*8, "|", "-"*(big-1), "|", "-"*15, "|", "-"*20, "|", "-"*15)
         for ticket in tickets:
             dateTime = datetime.datetime.strftime(datetime.datetime.strptime( ticket['created_at'], "%Y-%m-%dT%H:%M:%SZ" ), "%d %b %Y %I:%m:%p")
-            print(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status'])
+            print("{:<3} | {:<10} | {:<8}".format(ticket['id'], ticket['priority'], ticket['type']), "%-*s" % (big, "| Subject "), " | {:<15} | {:<15} | {:<15}" .format(ticket['submitter_id'], dateTime, ticket['status']))
 
 
 def main():
