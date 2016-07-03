@@ -122,14 +122,15 @@ def listAll():
     tickets = data['tickets']
     big = findDataLen(tickets)
     while data:
-        print("{:<3} | {:<10} | {:<8}".format("ID", "Priority", "Type"), "%-*s" % (big, "| Subject "), " | {:<15} | {:<20} | {:<15}" .format("Opened by", "Created", "Status"))
-        print("-"*3, "|", "-"*10, "|", "-"*8, "|", "-"*(big-1), "|", "-"*15, "|", "-"*20, "|", "-"*15)
+        print("{:<3} | {:<10} | {:<8}".format("ID", "Priority", "Type"), "%-*s" % (big+1, "| Subject "), " | {:<15} | {:<20} | {:<15}" .format("Opened by", "Created", "Status"))
+        print("-"*3, "|", "-"*10, "|", "-"*8, "|", "-"*(big), "|", "-"*15, "|", "-"*20, "|", "-"*15)
         for ticket in tickets:
             dateTime = datetime.datetime.strftime(datetime.datetime.strptime( ticket['created_at'], "%Y-%m-%dT%H:%M:%SZ" ), "%d %b %Y %I:%m:%p")
             #print(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status'])
-            print("{:<3} | {:<10} | {:<8}".format(ticket['id'], ticket['priority'], ticket['type']), "%-*s" % (big, "| Subject "), " | {:<15} | {:<15} | {:<15}" .format(ticket['submitter_id'], dateTime, ticket['status']))
+            #print("{:<3} | {:<10} | {:<8} | {:<15} | {:<15} | {:<15} | {:<15} " .format(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status']))
+            print("{:<3} | {:<10} | {:<8} |".format(ticket['id'], ticket['priority'], ticket['type']), "%-*s" % (big, ticket['subject']), "| {:<15} | {:<15} | {:<15} " .format(ticket['submitter_id'], dateTime, ticket['status']))
             #print("{:<3} | {:<10} | {:<8} | {:<15} | {:<15} | {:<15} | {:<15}".format(ticket['id'], ticket['priority'], ticket['type'], ticket['subject'], ticket['submitter_id'], dateTime, ticket['status']))
-            
+
         if(data['next_page'] != None):
             if (data['previous_page'] != None):
                 answer = input("Press 1 for next page or 2 for previous page\n")
@@ -171,11 +172,11 @@ def findTicket():
         print("No Tickets")
     else:
         big = findDataLen(tickets)
-        print("{:<3} | {:<10} | {:<8}".format("ID", "Priority", "Type"), "%-*s" % (big, "| Subject "), " | {:<15} | {:<20} | {:<15}" .format("Opened by", "Created", "Status"))
-        print("-"*3, "|", "-"*10, "|", "-"*8, "|", "-"*(big-1), "|", "-"*15, "|", "-"*20, "|", "-"*15)
+        print("{:<3} | {:<10} | {:<8}".format("ID", "Priority", "Type"), "%-*s" % (big+1, "| Subject "), " | {:<15} | {:<20} | {:<15}" .format("Opened by", "Created", "Status"))
+        print("-"*3, "|", "-"*10, "|", "-"*8, "|", "-"*(big), "|", "-"*15, "|", "-"*20, "|", "-"*15)
         for ticket in tickets:
             dateTime = datetime.datetime.strftime(datetime.datetime.strptime( ticket['created_at'], "%Y-%m-%dT%H:%M:%SZ" ), "%d %b %Y %I:%m:%p")
-            print("{:<3} | {:<10} | {:<8}".format(ticket['id'], ticket['priority'], ticket['type']), "%-*s" % (big, "| Subject "), " | {:<15} | {:<15} | {:<15}" .format(ticket['submitter_id'], dateTime, ticket['status']))
+            print("{:<3} | {:<10} | {:<8} |".format(ticket['id'], ticket['priority'], ticket['type']), "%-*s" % (big, ticket['subject']), "| {:<15} | {:<15} | {:<15} " .format(ticket['submitter_id'], dateTime, ticket['status']))
 
 
 def main():
